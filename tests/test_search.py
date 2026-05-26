@@ -66,8 +66,8 @@ def test_filter_by_category(page, test_config):
     # 2. Nhập chữ "Công nghệ" vào ô lọc thể loại theo đúng aria-label gợi ý
     flutter_fill(page, "Lọc theo thể loại (VD: Công nghệ, Kinh tế...)", "Công nghệ")
     
-    # 3. Đợi một chút để Flutter Web cập nhật danh sách (dùng bộ đợi của page thay vì time.sleep)
-    page.wait_for_timeout(2000)
+    # 3. Đợi một chút để Flutter Web cập nhật danh sách thông minh
+    wait_for_flutter(page, text="Công nghệ")
     
     # 4. Lấy danh sách tất cả các card sách đang hiển thị trên màn hình
     books = page.locator('flt-semantics[role="group"][aria-label*="Mã: BOOK"]')
@@ -90,8 +90,8 @@ def test_search_by_author(page, test_config):
     # 2. Nhập tên tác giả "Nguyễn Minh Đức" vào ô tìm kiếm theo đúng aria-label
     flutter_fill(page, "Tìm kiếm theo tên sách hoặc tác giả...", "Nguyễn Minh Đức")
     
-    # 3. Đợi Flutter Web xử lý kết quả tìm kiếm
-    page.wait_for_timeout(2000)
+    # 3. Đợi Flutter Web xử lý kết quả tìm kiếm thông minh
+    wait_for_flutter(page, text="Nguyễn Minh Đức")
     
     # 4. Kiểm tra xem số lượng kết quả tìm thấy có lớn hơn 0 hay không (Strong Oracle)
     results_count = page.locator('flt-semantics[aria-label*="Nguyễn Minh Đức"]').count()
