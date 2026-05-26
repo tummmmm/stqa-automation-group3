@@ -35,7 +35,6 @@ def test_logout(page, test_config):
     TC-11: Logout success
     Đăng nhập → Đăng xuất → quay về màn hình login
     """
-
     # Arrange
     smart_login(page, test_config)
 
@@ -48,20 +47,12 @@ def test_logout(page, test_config):
     except Exception:
         pass
 
-    # Assert
-    sem_text = " ".join(
-        page.locator("flt-semantics").all_text_contents()
-    )
-
-    assert "Email" in sem_text or "Đăng nhập" in sem_text
+    # Assert (Strong Oracle - Khớp chuẩn xác dữ liệu thật trên web mẫu)
+    sem_text = " ".join(page.locator("flt-semantics").all_text_contents())
+    assert "Tài khoản thử nghiệm:" in sem_text
 
     # Screenshot
-    page.screenshot(
-        path=os.path.join(
-            SCREENSHOT_DIR,
-            "tc11_logout_success.png"
-        )
-    )
+    page.screenshot(path=os.path.join(SCREENSHOT_DIR, "tc11_logout_success.png"))
 
 
 def test_switch_language_to_english(page, test_config):
@@ -69,34 +60,21 @@ def test_switch_language_to_english(page, test_config):
     TC-12: Switch language to English
     Đăng nhập → click EN → giao diện chuyển English
     """
-
     # Arrange
     smart_login(page, test_config)
 
     # Act
     flutter_click_button(page, "EN")
-    page.wait_for_timeout(2000)
+    page.wait_for_timeout(2500)
 
     try:
         enable_flutter_semantics(page)
     except Exception:
         pass
 
-    # Assert
-    sem_text = " ".join(
-        page.locator("flt-semantics").all_text_contents()
-    )
-
-    assert (
-        "Logout" in sem_text
-        or "Library" in sem_text
-        or "EN" in sem_text
-    )
+    # Assert (Strong Oracle)
+    sem_text = " ".join(page.locator("flt-semantics").all_text_contents())
+    assert "Logout" in sem_text or "Available categories" in sem_text
 
     # Screenshot
-    page.screenshot(
-        path=os.path.join(
-            SCREENSHOT_DIR,
-            "tc12_switch_language_en.png"
-        )
-    )
+    page.screenshot(path=os.path.join(SCREENSHOT_DIR, "tc12_switch_language_en.png"))
