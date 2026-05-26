@@ -15,6 +15,7 @@ Hints (*Gợi ý*):
       (*Dùng login() helper từ conftest.py để đăng nhập trước khi test*)
 """
 import os
+from conftest import wait_for_flutter
 import time
 import pytest
 from conftest import (
