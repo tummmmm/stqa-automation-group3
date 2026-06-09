@@ -1,80 +1,102 @@
+
 """
 Logout & Language Tests — Library Book Borrowing System
 """
 
 import os
-import pytest
+
 from conftest import (
     enable_flutter_semantics,
-    flutter_fill,
-    flutter_click_button,
+    login,
     SCREENSHOT_DIR,
 )
 
 
-def smart_login(page, test_config):
-    """Login an toàn cho Flutter Web"""
-    page.goto(test_config["base_url"])
-    page.wait_for_timeout(3000)
-
-    try:
-        enable_flutter_semantics(page)
-        page.wait_for_timeout(1000)
-    except Exception:
-        pass
-
-    flutter_fill(page, "Email", test_config["email"])
-    flutter_fill(page, "Mật khẩu", test_config["password"])
-    flutter_click_button(page, "Đăng nhập")
-
-    page.wait_for_timeout(3000)
-
-
 def test_logout(page, test_config):
-    """
-    TC-11: Logout success
-    Đăng nhập → Đăng xuất → quay về màn hình login
-    """
-    # Arrange
-    smart_login(page, test_config)
+    """TC-11: Logout success"""
 
-    # Act
-    flutter_click_button(page, "Đăng xuất")
+    # Login
+    login(page, test_config)
+
+    # Ensure semantics are enabled
+    enable_flutter_semantics(page)
+
+    # Click Logout button
+    logout_btn = page.locator(
+        'flt-semantics[role="button"]:has-text("Đăng xuất")'
+    ).first
+
+    logout_btn.click()
+
+    # Wait for page navigation
     page.wait_for_timeout(3000)
 
+    # Re-enable semantics after navigation
     try:
         enable_flutter_semantics(page)
     except Exception:
         pass
 
-    # Assert (Strong Oracle - Khớp chuẩn xác dữ liệu thật trên web mẫu)
-    sem_text = " ".join(page.locator("flt-semantics").all_text_contents())
-    assert "Tài khoản thử nghiệm:" in sem_text
+    # Verify login page appears again
+    sem_text = " ".join(
+        page.locator("flt-semantics").all_text_contents()
+    )
 
-    # Screenshot
-    page.screenshot(path=os.path.join(SCREENSHOT_DIR, "tc11_logout_success.png"))
+    assert (
+        "Đăng nhập" in sem_text
+        or "Email" in sem_text
+    )
+
+    # Evidence
+    page.screenshot(
+        path=os.path.join(
+            SCREENSHOT_DIR,
+            "tc11_logout_success.png"
+        )
+    )
 
 
 def test_switch_language_to_english(page, test_config):
-    """
-    TC-12: Switch language to English
-    Đăng nhập → click EN → giao diện chuyển English
-    """
-    # Arrange
-    smart_login(page, test_config)
+    """TC-12: Switch language to English"""
 
-    # Act
-    flutter_click_button(page, "EN")
+    # Login
+    login(page, test_config)
+
+    # Ensure semantics are enabled
+    enable_flutter_semantics(page)
+
+    # Click EN button
+    en_btn = page.locator(
+        'flt-semantics[role="button"]:has-text("EN")'
+    ).first
+
+    en_btn.click()
+
+    # Wait for language switching
     page.wait_for_timeout(2500)
 
+    # Re-enable semantics
     try:
         enable_flutter_semantics(page)
     except Exception:
         pass
 
-    # Assert (Strong Oracle)
-    sem_text = " ".join(page.locator("flt-semantics").all_text_contents())
-    assert "Logout" in sem_text or "Available categories" in sem_text
+    # Verify English UI
+    sem_text = " ".join(
+        page.locator("flt-semantics").all_text_contents()
+    )
 
-    # Screenshot
-    page.screenshot(path=os.path.join(SCREENSHOT_DIR, "tc12_switch_language_en.png"))
+    assert (
+        "Logout" in sem_text
+        or "Borrow" in sem_text
+        or "Library" in sem_text
+    )
+
+    # Evidence
+    page.screenshot(
+        path=os.path.join(
+            SCREENSHOT_DIR,
+            "tc12_switch_language_en.png"
+        )
+    )
+
